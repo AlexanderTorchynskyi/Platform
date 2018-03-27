@@ -10,5 +10,5 @@ import ua.tor.platform.model.Crawler;
  *
  */
 public interface ICrawlerRepository extends MongoRepository<Crawler, ObjectId> {
-
+	Crawler findOneById(ObjectId id);
 }
