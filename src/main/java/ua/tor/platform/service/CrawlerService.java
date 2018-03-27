@@ -42,6 +42,14 @@ public class CrawlerService {
 	private RabotaPageBasicInformation robota;
 	private Crawler crawler;
 
+	/**
+	 * Main method for starting crawling.
+	 * 
+	 * @param searchword is key word by which websites will be crawled;
+	 * @throws IOException
+	 * @throws InterruptedException
+	 * @throws ExecutionException
+	 */
 	public void startCrawling(String searchword)
 			throws IOException, InterruptedException, ExecutionException {
 		this.searchword = searchword;
@@ -99,9 +107,10 @@ public class CrawlerService {
 
 
 	/*
-	 * 5 threads will use 5 task so each has it's own pages and elements 1 - 4 threads are simple
-	 * case each has the same amount of urls; The fifth might have less elements because we don't
-	 * know how many elements on the last page;
+	 * Method for creating tasks for each thread and dividing pages for crawling per each task. The
+	 * logic is that {@amountOfThreads - 1} threads will have the same amount of pages; and the last
+	 * thread will have amountOfPages:
+	 * { amountOfPagesForTheLastThread = amountOfPages - (amountOfPages / (amountOfThreads-1)))}
 	 */
 	private List<Callable<List<Vacancy>>> getListOfLinksTaskRobota(List<Integer> listOfPages,
 			String searchWord) {
