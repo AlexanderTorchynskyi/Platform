@@ -2,6 +2,7 @@ package ua.tor.platform.api;
 
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.concurrent.ExecutionException;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ua.tor.platform.service.CrawlerService;
+import ua.tor.platform.service.IncrementorService;
 import ua.tor.platform.service.ParserService;
 
 
@@ -29,9 +31,10 @@ public class PlatformController {
 
 	@Autowired
 	private CrawlerService crawlerService;
-
 	@Autowired
 	private ParserService parserService;
+	@Autowired
+	private IncrementorService incrementorService;
 
 	/**
 	 * Method will start crawler with specific word
@@ -55,6 +58,19 @@ public class PlatformController {
 	@RequestMapping(value = "parser/start", method = RequestMethod.GET)
 	public ResponseEntity<?> runParser(@RequestParam(value = "crawler_id") ObjectId crawlerId) {
 		parserService.parseVacancies(crawlerId);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	/**
+	 * @throws GeneralSecurityException
+	 * @throws IOException
+	 * 
+	 * 
+	 */
+	@RequestMapping(value = "incrementor/start")
+	public ResponseEntity<?> runIncrementor(@RequestParam(value = "crawler_id") ObjectId crawlerId)
+			throws IOException, GeneralSecurityException {
+		incrementorService.getVacancies(crawlerId);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }
