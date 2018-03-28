@@ -11,9 +11,7 @@ If everything was loaded you should see `true` in the output, if so, go ahead
 To start crawling go to `localhost:8080/platform/rest/crawler/start?searchword=ruby` this will start crawling vacancies that have ruby language.
 It can take up to 1-2 minutes. When it is done you will get the response with crawler id: 
 ```JSON 
-{
 5abbdac3df6ba54ed21cd5ca
-}
 ```
 Check you database to get all information about crawler: 
 ```JSON
