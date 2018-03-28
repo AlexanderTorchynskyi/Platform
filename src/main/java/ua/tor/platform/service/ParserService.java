@@ -12,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.tor.platform.model.ParsedVacancy;
 import ua.tor.platform.model.Status;
+import ua.tor.platform.model.StopWord;
 import ua.tor.platform.model.Vacancy;
 import ua.tor.platform.repository.IParsedVacancyRepository;
+import ua.tor.platform.repository.IStopWordRepository;
 import ua.tor.platform.repository.IVacancyRepository;
 
 /**
@@ -30,9 +32,12 @@ public class ParserService {
 	private IParsedVacancyRepository parsedVacancyRepository;
 	@Autowired
 	private IVacancyRepository vacancyRepository;
+	@Autowired
+	private IStopWordRepository stopWordRepository;
 
 	private List<Vacancy> batchOfVacancy;
 	private List<ParsedVacancy> bathOfParsedVacancy;
+	private List<StopWord> listOfStopWords;
 
 	/**
 	 * The method will remove all words that are repeated and all symbolics;
@@ -66,6 +71,7 @@ public class ParserService {
 		String description;
 		ParsedVacancy parsedVacancy;
 
+		listOfStopWords = getListOfStopWords();
 		String[] splitedDescription;
 		bathOfParsedVacancy = new ArrayList<>();
 		Set<String> cleanDescription;
@@ -76,7 +82,7 @@ public class ParserService {
 			cleanDescription = new HashSet<>();
 
 			description = vacancy.getDescription();
-			description = description.replaceAll("[^a-zA-Z0-9]", " ");
+			description = description.replaceAll("[^a-zA-Z0-9'-]", " ");
 			splitedDescription = description.split("\\s+");
 
 			for (String word : splitedDescription) {
@@ -84,13 +90,17 @@ public class ParserService {
 					cleanDescription.add(word.toLowerCase());
 				}
 			}
-
+			cleanDescription.removeAll(listOfStopWords);
 			parsedVacancy.setCrawlerId(vacancy.getCrawlerId());
 			parsedVacancy.setDescription(cleanDescription);
 			parsedVacancy.setStatus(Status.NEW);
 
 			bathOfParsedVacancy.add(parsedVacancy);
 		}
+	}
+
+	private List<StopWord> getListOfStopWords() {
+		return stopWordRepository.findAll();
 	}
 
 	private void saveOrUpdate(List<ParsedVacancy> parsedVacancies) {

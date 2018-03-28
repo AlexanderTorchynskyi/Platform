@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ua.tor.platform.service.CrawlerService;
 import ua.tor.platform.service.ParserService;
+import ua.tor.platform.service.StopWordService;
 
 
 /**
@@ -29,9 +30,10 @@ public class PlatformController {
 
 	@Autowired
 	private CrawlerService crawlerService;
-
 	@Autowired
 	private ParserService parserService;
+	@Autowired
+	private StopWordService stopWordService;
 
 	/**
 	 * Method will start crawler with specific word
@@ -55,6 +57,17 @@ public class PlatformController {
 	@RequestMapping(value = "parser/start", method = RequestMethod.GET)
 	public ResponseEntity<?> runParser(@RequestParam(value = "crawler_id") ObjectId crawlerId) {
 		parserService.parseVacancies(crawlerId);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	/**
+	 * Method will start parsing vacancies by specific crawler;
+	 * 
+	 * @param crawlerId
+	 */
+	@RequestMapping(value = "stopwords/load", method = RequestMethod.GET)
+	public ResponseEntity<?> loadStopWords() {
+		stopWordService.loadStopWords();
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }
