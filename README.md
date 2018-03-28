@@ -9,17 +9,9 @@ If everything was done correctly you should see no error in the console;
 First of all, letss download all stop words into our database just put next URL into your browse: `localhost:8080/platform/rest/stopwords/load`
 If everything was loaded you should see `true` in the output, if so, go ahead
 To start crawling go to `localhost:8080/platform/rest/crawler/start?searchword=ruby` this will start crawling vacancies that have ruby language.
-It can take up to 1-2 minutes. When it is done you will get the JSON with crawler id: 
+It can take up to 1-2 minutes. When it is done you will get the response with crawler id: 
 ```JSON 
-{
-    "timestamp": 1522260675,
-    "machineIdentifier": 14642085,
-    "processIdentifier": 20178,
-    "counter": 1889738,
-    "time": 1522260675000,
-    "date": "2018-03-28T18:11:15.000+0000",
-    "timeSecond": 1522260675
-}
+5abbdac3df6ba54ed21cd5ca
 ```
 Check you database to get all information about crawler: 
 ```JSON
