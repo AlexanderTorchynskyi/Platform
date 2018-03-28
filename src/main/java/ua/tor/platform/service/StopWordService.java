@@ -30,12 +30,16 @@ public class StopWordService {
 	private List<StopWord> stopWords;
 	private StopWord stopWord;
 
-	public void loadStopWords() {
+	public boolean loadStopWords() {
+		boolean flag = false;
 		try {
 			insertStopWords(readFromInputStream("stop_words.txt"));
+			flag = true;
+			return flag;
 		} catch (IOException e) {
 			LOGGER.error("Exception with openning file ");
 			e.printStackTrace();
+			return flag;
 		}
 	}
 

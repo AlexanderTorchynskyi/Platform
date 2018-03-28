@@ -36,7 +36,7 @@ public class PlatformController {
 	private ParserService parserService;
 	@Autowired
 	private StopWordService stopWordService;
-  @Autowired
+	@Autowired
 	private IncrementorService incrementorService;
 
 
@@ -48,10 +48,15 @@ public class PlatformController {
 	 * @throws IOException
 	 */
 	@RequestMapping(value = "crawler/start", method = RequestMethod.GET)
-	public ResponseEntity<?> runCrawler(@RequestParam(value = "searchword") String searchword)
-			throws IOException, InterruptedException, ExecutionException {
-		crawlerService.startCrawling(searchword);
-		return new ResponseEntity<>(HttpStatus.OK);
+	public ResponseEntity<?> runCrawler(@RequestParam(value = "searchword") String searchword) {
+		try {
+			ObjectId id = crawlerService.startCrawling(searchword);
+			return new ResponseEntity<>(id, HttpStatus.OK);
+		} catch (IOException | InterruptedException | ExecutionException e) {
+			LOGGER.error(e.getMessage());
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	/**
@@ -61,8 +66,15 @@ public class PlatformController {
 	 */
 	@RequestMapping(value = "parser/start", method = RequestMethod.GET)
 	public ResponseEntity<?> runParser(@RequestParam(value = "crawler_id") ObjectId crawlerId) {
-		parserService.parseVacancies(crawlerId);
-		return new ResponseEntity<>(HttpStatus.OK);
+		try {
+			// TODO return amount of parsed vacancies;
+			parserService.parseVacancies(crawlerId);
+			return new ResponseEntity<>(HttpStatus.OK);
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage());
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	/**
@@ -72,20 +84,32 @@ public class PlatformController {
 	 */
 	@RequestMapping(value = "stopwords/load", method = RequestMethod.GET)
 	public ResponseEntity<?> loadStopWords() {
-		stopWordService.loadStopWords();
-    return new ResponseEntity<>(HttpStatus.OK);
-  }
-  /**
-	 * @throws GeneralSecurityException
-	 * @throws IOException
+		try {
+			boolean isDownloaded = stopWordService.loadStopWords();
+			return new ResponseEntity<>(isDownloaded, HttpStatus.OK);
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage());
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	/**
 	 * 
-	 * 
+	 * @param crawlerId
+	 * @return
 	 */
 	@RequestMapping(value = "incrementor/start")
-	public ResponseEntity<?> runIncrementor(@RequestParam(value = "crawler_id") ObjectId crawlerId)
-			throws IOException, GeneralSecurityException {
-		incrementorService.getVacancies(crawlerId);
-
-		return new ResponseEntity<>(HttpStatus.OK);
+	public ResponseEntity<?> runIncrementor(
+			@RequestParam(value = "crawler_id") ObjectId crawlerId) {
+		try {
+			// TODO return a link that follows a google dock with rendered skills;
+			incrementorService.getVacancies(crawlerId);
+			return new ResponseEntity<>(HttpStatus.OK);
+		} catch (IOException | GeneralSecurityException e) {
+			LOGGER.error(e.getMessage());
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 }

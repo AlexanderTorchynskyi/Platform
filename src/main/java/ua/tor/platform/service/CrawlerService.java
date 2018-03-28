@@ -12,6 +12,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.log4j.Logger;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.tor.platform.model.Crawler;
@@ -50,7 +51,7 @@ public class CrawlerService {
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
-	public void startCrawling(String searchword)
+	public ObjectId startCrawling(String searchword)
 			throws IOException, InterruptedException, ExecutionException {
 		this.searchword = searchword;
 		StopWatch s = new StopWatch();
@@ -89,6 +90,7 @@ public class CrawlerService {
 		saveOrUpdateCrawler(crawler);
 
 		LOGGER.info("Total time in seconds " + s.getTime(TimeUnit.SECONDS));
+		return crawler.getId();
 	}
 
 	private void saveIntoDB(List<Future<List<Vacancy>>> entities) {
@@ -109,8 +111,8 @@ public class CrawlerService {
 	/*
 	 * Method for creating tasks for each thread and dividing pages for crawling per each task. The
 	 * logic is that {@amountOfThreads - 1} threads will have the same amount of pages; and the last
-	 * thread will have amountOfPages:
-	 * { amountOfPagesForTheLastThread = amountOfPages - (amountOfPages / (amountOfThreads-1)))}
+	 * thread will have amountOfPages: { amountOfPagesForTheLastThread = amountOfPages -
+	 * (amountOfPages / (amountOfThreads-1)))}
 	 */
 	private List<Callable<List<Vacancy>>> getListOfLinksTaskRobota(List<Integer> listOfPages,
 			String searchWord) {

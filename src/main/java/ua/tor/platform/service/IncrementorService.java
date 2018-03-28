@@ -98,6 +98,8 @@ public class IncrementorService {
 		try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(dumpId + SAMPLE_CSV_FILE));
 				CSVPrinter csvPrinter = new CSVPrinter(writer,
 						CSVFormat.DEFAULT.withHeader("Skill", "Quantity"));) {
+			csvPrinter.printRecord(getSkillByCrawlerId(crawlerId),
+					getAmountOfParsedVacancyByCrawlerId(crawlerId));
 			for (Map.Entry<String, Integer> entry : map.entrySet()) {
 				csvPrinter.printRecord(entry.getKey(), entry.getValue());
 			}
