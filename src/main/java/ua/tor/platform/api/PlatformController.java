@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ua.tor.platform.service.CrawlerService;
 import ua.tor.platform.service.IncrementorService;
 import ua.tor.platform.service.ParserService;
+import ua.tor.platform.service.StopWordService;
 
 
 /**
@@ -34,7 +35,10 @@ public class PlatformController {
 	@Autowired
 	private ParserService parserService;
 	@Autowired
+	private StopWordService stopWordService;
+  @Autowired
 	private IncrementorService incrementorService;
+
 
 	/**
 	 * Method will start crawler with specific word
@@ -62,6 +66,16 @@ public class PlatformController {
 	}
 
 	/**
+	 * Method will start parsing vacancies by specific crawler;
+	 * 
+	 * @param crawlerId
+	 */
+	@RequestMapping(value = "stopwords/load", method = RequestMethod.GET)
+	public ResponseEntity<?> loadStopWords() {
+		stopWordService.loadStopWords();
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
+  /**
 	 * @throws GeneralSecurityException
 	 * @throws IOException
 	 * 
@@ -71,6 +85,7 @@ public class PlatformController {
 	public ResponseEntity<?> runIncrementor(@RequestParam(value = "crawler_id") ObjectId crawlerId)
 			throws IOException, GeneralSecurityException {
 		incrementorService.getVacancies(crawlerId);
+
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }
