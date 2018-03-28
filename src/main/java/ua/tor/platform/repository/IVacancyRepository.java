@@ -17,7 +17,6 @@ import ua.tor.platform.model.Vacancy;
 public interface IVacancyRepository extends MongoRepository<Vacancy, ObjectId> {
 
 	List<Vacancy> findByCrawlerId(ObjectId crawlerId);
-	
-	List<Vacancy> findByStatus(Status status);
 
+	List<Vacancy> findByStatus(Status status);
 }

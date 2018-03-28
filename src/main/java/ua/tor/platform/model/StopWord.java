@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
  */
 @Document(collection = "stop_word")
 public class StopWord {
+
 	@Id
 	@JsonSerialize(using = ToStringSerializer.class)
 	private ObjectId id;

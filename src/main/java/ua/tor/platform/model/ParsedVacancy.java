@@ -1,6 +1,5 @@
 package ua.tor.platform.model;
 
-import java.util.List;
 import java.util.Set;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
@@ -16,7 +15,6 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
  */
 @Document(collection = "parsed_vacancy")
 public class ParsedVacancy {
-
 
 	@Id
 	@JsonSerialize(using = ToStringSerializer.class)
