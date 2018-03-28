@@ -38,6 +38,7 @@ public class ParserService {
 	private List<Vacancy> batchOfVacancy;
 	private List<ParsedVacancy> bathOfParsedVacancy;
 	private List<StopWord> listOfStopWords;
+	private List<String> listOfStopWordsTypeString;
 
 	/**
 	 * The method will remove all words that are repeated and all symbolics;
@@ -72,6 +73,7 @@ public class ParserService {
 		ParsedVacancy parsedVacancy;
 
 		listOfStopWords = getListOfStopWords();
+		getListOfStopWords(listOfStopWords);
 		String[] splitedDescription;
 		bathOfParsedVacancy = new ArrayList<>();
 		Set<String> cleanDescription;
@@ -90,7 +92,7 @@ public class ParserService {
 					cleanDescription.add(word.toLowerCase());
 				}
 			}
-			cleanDescription.removeAll(listOfStopWords);
+			cleanDescription.removeAll(listOfStopWordsTypeString);
 			parsedVacancy.setCrawlerId(vacancy.getCrawlerId());
 			parsedVacancy.setDescription(cleanDescription);
 			parsedVacancy.setStatus(Status.NEW);
@@ -101,6 +103,14 @@ public class ParserService {
 
 	private List<StopWord> getListOfStopWords() {
 		return stopWordRepository.findAll();
+	}
+
+	private List<String> getListOfStopWords(List<StopWord> list) {
+		listOfStopWordsTypeString = new ArrayList<>();
+		for (StopWord stopWord : list) {
+			listOfStopWordsTypeString.add(stopWord.getKey());
+		}
+		return listOfStopWordsTypeString;
 	}
 
 	private void saveOrUpdate(List<ParsedVacancy> parsedVacancies) {
