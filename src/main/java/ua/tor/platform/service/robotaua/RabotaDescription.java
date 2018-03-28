@@ -16,7 +16,7 @@ import ua.tor.platform.model.Vacancy;
  *
  */
 public class RabotaDescription implements Callable<List<Vacancy>> {
-	private static final Logger log = Logger.getLogger(RabotaDescription.class);
+	private static final Logger LOGGER = Logger.getLogger(RabotaDescription.class);
 
 	private final String SELECTOR_FOR_DESCRIPTION_TYPE_FANCY = "div.f-vacancy-description";
 	private final String SELECTOR_FOR_DESCRIPTION_TYPE_REGULAR = "div.d_des";
@@ -50,15 +50,15 @@ public class RabotaDescription implements Callable<List<Vacancy>> {
 			Elements vacancyBody = doc.select(SELECTOR_FOR_DESCRIPTION_TYPE_FANCY);
 			vacancy.setLink(urls.get(i).getLink());
 			vacancy.setTitle(doc.title());
-			log.info(Thread.currentThread().getName());
+			LOGGER.info(Thread.currentThread().getName());
 			if (!vacancyBody.text().isEmpty()) {
 				vacancy.setDescription(vacancyBody.text());
-				log.info(vacancyBody.text());
+				LOGGER.info(vacancyBody.text());
 			} else {
 				vacancyBody = doc.select(SELECTOR_FOR_DESCRIPTION_TYPE_REGULAR);
 				vacancy.setDescription(vacancyBody.text());
 
-				log.info(vacancyBody.text());
+				LOGGER.info(vacancyBody.text());
 			}
 			listOfVacancies.add(vacancy);
 		}

@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,6 +36,8 @@ import ua.tor.platform.utils.SheetServiceUtil;
 @Component
 public class IncrementorService {
 
+	private static final Logger LOGGER = Logger.getLogger(IncrementorService.class);
+
 	private static final String SAMPLE_CSV_FILE = "dump.csv";
 	private static final String SPREAD_SHEET_ID = "14ccZZYNg1o6nC-rSgc7orW2jybve0U8SzPVrwqJzEo0";
 	private static final Integer DEFAULT_WEIGHT = 1;
@@ -44,9 +47,9 @@ public class IncrementorService {
 	private IParsedVacancyRepository parsedVacancy;
 	@Autowired
 	private ICrawlerRepository crawlerRepository;
+
 	private ObjectId crawlerId;
 	private String dumpId;
-
 
 	private Map<String, Integer> qntConter;
 	private List<ParsedVacancy> listOfParsedVacancies;
@@ -62,7 +65,7 @@ public class IncrementorService {
 	public Map<String, Integer> getVacancies(ObjectId crawlerId)
 			throws IOException, GeneralSecurityException {
 		this.crawlerId = crawlerId;
-
+		LOGGER.info("Getting vacancies with crawlerid" + crawlerId);
 		listOfParsedVacancies = parsedVacancy.findByCrawlerId(crawlerId);
 		return getCollection(listOfParsedVacancies);
 	}
@@ -70,6 +73,7 @@ public class IncrementorService {
 	private Map<String, Integer> getCollection(List<ParsedVacancy> lsOfVacancies)
 			throws IOException, GeneralSecurityException {
 		qntConter = new HashMap<>();
+		LOGGER.info("Counting amount of repeated words");
 		for (ParsedVacancy words : lsOfVacancies) {
 			for (String word : words.getDescription()) {
 				if (qntConter.containsKey(word)) {
@@ -84,17 +88,20 @@ public class IncrementorService {
 
 	private Map<String, Integer> sortMap(Map<String, Integer> map)
 			throws IOException, GeneralSecurityException {
+		LOGGER.info("Sort map in descending order by quantity");
 		Map<String, Integer> result = map.entrySet().stream()
 				.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
 						(oldValue, newValue) -> oldValue, LinkedHashMap::new));
 		writeToCsv(result);
-		writeToGoogleSheets(result);
+		// TODO need to provide some extra configs for that method
+		// writeToGoogleSheets(result);
 		return result;
 	}
 
 	private void writeToCsv(Map<String, Integer> map) {
 		this.dumpId = crawlerId.toString() + "_";
+		LOGGER.info("Creating dump csv with name " + dumpId + SAMPLE_CSV_FILE);
 		try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(dumpId + SAMPLE_CSV_FILE));
 				CSVPrinter csvPrinter = new CSVPrinter(writer,
 						CSVFormat.DEFAULT.withHeader("Skill", "Quantity"));) {
@@ -105,14 +112,14 @@ public class IncrementorService {
 			}
 			csvPrinter.flush();
 		} catch (IOException e) {
-
+			LOGGER.error(e.getMessage());
 			e.printStackTrace();
 		}
 	}
 
 	private void writeToGoogleSheets(Map<String, Integer> map)
 			throws IOException, GeneralSecurityException {
-
+		LOGGER.info("Writting to google dock the id for spreadsheet " + SPREAD_SHEET_ID);
 		Sheets sheetsService = SheetServiceUtil.getSheetsService();
 
 		ClearValuesRequest requestBody = new ClearValuesRequest();

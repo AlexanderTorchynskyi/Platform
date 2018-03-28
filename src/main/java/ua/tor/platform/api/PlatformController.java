@@ -39,7 +39,6 @@ public class PlatformController {
 	@Autowired
 	private IncrementorService incrementorService;
 
-
 	/**
 	 * Method will start crawler with specific word
 	 * 
@@ -67,9 +66,8 @@ public class PlatformController {
 	@RequestMapping(value = "parser/start", method = RequestMethod.GET)
 	public ResponseEntity<?> runParser(@RequestParam(value = "crawler_id") ObjectId crawlerId) {
 		try {
-			// TODO return amount of parsed vacancies;
-			parserService.parseVacancies(crawlerId);
-			return new ResponseEntity<>(HttpStatus.OK);
+			String response = parserService.parseVacancies(crawlerId);
+			return new ResponseEntity<>(response, HttpStatus.OK);
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
 			e.printStackTrace();

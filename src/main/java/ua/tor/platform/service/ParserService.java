@@ -45,7 +45,7 @@ public class ParserService {
 	 * 
 	 * @param crawlerId
 	 */
-	public void parseVacancies(ObjectId crawlerId) {
+	public String parseVacancies(ObjectId crawlerId) {
 		StopWatch watcher = new StopWatch();
 		watcher.start();
 		LOGGER.info("Getting vacancies from DB by crawler id");
@@ -59,6 +59,7 @@ public class ParserService {
 		saveOrUpdate(bathOfParsedVacancy);
 		watcher.stop();
 		LOGGER.info("Total time in seconds " + watcher.getTime(TimeUnit.SECONDS));
+		return "Vacancies was processed " + parsedVacancyRepository.countByCrawlerId(crawlerId);
 	}
 
 	private void changeStatusForVacancy(ObjectId crawlerId, Status status) {

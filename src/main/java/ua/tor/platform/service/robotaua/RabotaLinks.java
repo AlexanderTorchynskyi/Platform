@@ -19,7 +19,8 @@ import ua.tor.platform.model.Vacancy;
  *
  */
 public class RabotaLinks implements Callable<List<Vacancy>> {
-	private static final Logger log = Logger.getLogger(RabotaLinks.class);
+	
+	private static final Logger LOGGER = Logger.getLogger(RabotaLinks.class);
 
 	private final String WEBLINK = "https://rabota.ua";
 	private final String SELECTOR_FOR_LNKS = "h3.fd-beefy-gunso a";
@@ -92,8 +93,8 @@ public class RabotaLinks implements Callable<List<Vacancy>> {
 				vacancy.setCrawlerId(crawlerId);
 				listOfVacancies.add(vacancy);
 
-				log.info(allLinksFromPage.get(j).attr(REF));
-				log.info(Thread.currentThread().getName());
+				LOGGER.info(allLinksFromPage.get(j).attr(REF));
+				LOGGER.info(Thread.currentThread().getName());
 			}
 		}
 		return listOfVacancies;
