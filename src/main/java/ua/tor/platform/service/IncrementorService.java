@@ -62,25 +62,29 @@ public class IncrementorService {
     private Map<String, Integer> sortMap(Map<String, Integer> map) {
         Map<String, Integer> result = map.entrySet().stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .limit(100)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
                         (oldValue, newValue) -> oldValue, LinkedHashMap::new));
         return result;
     }
 
     public List<Skill> getSkills(String searchWord) {
+        logger.info("start searching for all crawler_ids by serach word");
         List<Crawler> allBySearchCondition = crawlerService.findAllBySearchCondition(searchWord);
+        logger.info("Found amount of crawler by this skill {} {}", searchWord, allBySearchCondition.size());
         List<Skill> skillList = new ArrayList<>();
-
+        logger.info("stop searching for all crawler_ids by serach word");
         for (Crawler crawler : allBySearchCondition) {
-
+            logger.info("start creating subskills for {} language with id {}", searchWord, crawler.getId());
             List<Subskill> subskills = new ArrayList<>();
             Map<String, Integer> vacancies = getVacancies(new IncrementorRequest(crawler.getId()));
 
             vacancies.forEach((k, v) -> {
                 Subskill subskill = new Subskill();
                 subskill.setName(k);
-                subskill.setPersents((double) v / getAmountOfParsedVacancyByCrawlerId(crawler.getId()) * 100.0);
+                subskill.setPersents(Math.round(((double) v / getAmountOfParsedVacancyByCrawlerId(crawler.getId()) * 100.0) * 100.0) / 100.0);
                 subskills.add(subskill);
+                logger.info("subskill added {}", k);
             });
 
             Skill skill = new Skill(getSkillByCrawlerId(crawler.getId()), getAmountOfParsedVacancyByCrawlerId(crawler.getId()), crawler.getCreatedDate(), subskills);

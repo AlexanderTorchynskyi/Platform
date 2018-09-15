@@ -1,11 +1,12 @@
 package ua.tor.platform.service.robotaua;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -36,8 +37,6 @@ public class RabotaPageBasicInformation {
 	public List<Integer> getListOfPages() throws IOException {
 		doc = Jsoup.connect(WEBLINK + "/ua/jobsearch/vacancy_list?keyWords=" + searchWord)
 				.timeout(10 * 1000).get();
-		// doc = Jsoup.connect("https://rabota.ua/jobsearch/vacancy_list?pg=1").timeout(10 * 1000)
-		// .get();
 
 		vacansies = doc.select(SELECTOR_FOR_AMOUT_OF_FOUND_VACANSIES);
 		double amountOfAllVacancies = Double.valueOf(vacansies.html().replaceAll(BACKSPACE, ""));

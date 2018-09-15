@@ -5,8 +5,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ua.tor.platform.persistent.ProgramingLanguage;
-import ua.tor.platform.service.ProgramingLanguageService;
+import ua.tor.platform.model.Skill;
+import ua.tor.platform.service.IncrementorService;
 
 import java.util.List;
 
@@ -14,10 +14,10 @@ import java.util.List;
 @RequestMapping("/")
 public class IndexController {
 
-    private final ProgramingLanguageService programingLanguageService;
+    private final IncrementorService incrementorService;
 
-    public IndexController(ProgramingLanguageService programingLanguageService) {
-        this.programingLanguageService = programingLanguageService;
+    public IndexController(IncrementorService incrementorService) {
+        this.incrementorService = incrementorService;
     }
 
     @GetMapping
@@ -25,19 +25,17 @@ public class IndexController {
         return "adminPage/main/index";
     }
 
-    @GetMapping("lang/getAll")
-    public String getAllLanguages(Model model) {
-        List<ProgramingLanguage> programingLanguages = programingLanguageService.getAll();
-        model.addAttribute(programingLanguages);
-        return "adminPage/main/allLanguages";
+    @GetMapping("lang/search")
+    public String getAllSkills(@RequestParam("name") String skill, Model model) {
+        List<Skill> skills = incrementorService.getSkills(skill);
+        model.addAttribute(skills);
+        return "adminPage/main/skills";
     }
 
-
-    @GetMapping("lang")
-    public String getAllSubskills(@RequestParam("name") String name, Model model) {
-        List<ProgramingLanguage> programingLanguages = programingLanguageService.getAll();
-        model.addAttribute(programingLanguages);
-        return "adminPage/main/allLanguages";
+    @GetMapping("lang/skill")
+    public String getSkillWithSubskills(@RequestParam("name") String skill, Model model) {
+        List<Skill> skills = incrementorService.getSkills(skill);
+        model.addAttribute(skills);
+        return "adminPage/main/renederSkills";
     }
-
 }

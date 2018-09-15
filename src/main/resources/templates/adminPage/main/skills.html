@@ -37,15 +37,20 @@
                             <table class="table table-striped table-responsive" id="product-table">
                                 <thead class="thead">
                                 <tr>
-                                    <th style="width: 645px;">Назва</th>
+                                    <th>Мова програмування</th>
+                                    <th>Кількість вакансій</th>
+                                    <th>Дата</th>
                                 </tr>
                                 </thead>
                                 <tbody id="table-body">
-                                <tr th:each="product: ${programingLanguageList}" style="text-align: center">
-                                    <td th:text="${product.name}"></td>
+                                <tr th:each="skill: ${skillList}" style="text-align: center">
+                                    <td th:text="${skill.skillName}"></td>
+                                    <td th:text="${skill.amountOfVacancies}"></td>
+                                    <td th:text="${skill.date}"></td>
                                 </tr>
                                 </tbody>
                             </table>
+
                         </div>
                     </div>
                 </div>

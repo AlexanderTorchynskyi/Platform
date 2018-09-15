@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/head :: head">
+    <meta charset="UTF-8">
+    <title>Title</title>
 </head>
+
 <body>
-
 <nav th:replace="fragments/header :: nav"></nav>
-
 <div id="admin-section">
     <div class="admin-inner">
         <div class="container">
@@ -20,7 +21,7 @@
                         <div class="col-lg-12 d-flex flex-wrap">
                             <!--Search main-->
                             <div class="row col-lg-12 d-flex flex-nowrap pb-2">
-                                    <form th:action="@{/lang/search}" class="form-inline col-lg-12 px-0"
+                                <form th:action="@{/lang/search}" class="form-inline col-lg-12 px-0"
                                       th:method="get"
                                       method="get">
                                     <div class="input-group col-lg-9">
@@ -33,7 +34,19 @@
                                 </form>
                             </div>
 
-                            <!--<div th:replace="fragments/pagination::div"></div>-->
+                            <div class="container" id="menu">
+                                <ul class="nav nav-pills">
+                                    <li><a data-toggle="pill" href="#date1">date1</a></li>
+                                    <li><a data-toggle="pill" href="#date2">date2</a></li>
+                                    <li><a data-toggle="pill" href="#date3">date3</a></li>
+                                    <li><a data-toggle="pill" href="#date4">date4</a></li>
+                                    <li><a data-toggle="pill" href="#date5">date5</a></li>
+                                    <li><a data-toggle="pill" href="#dateN">dateN</a></li>
+                                </ul>
+
+                                <!-- Inject must diets must be here-->
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -42,9 +55,6 @@
     </div>
 </div>
 <footer th:replace="fragments/footer :: footer"></footer>
-
 <div th:replace="fragments/jsScripts :: scripts"></div>
-
-
 </body>
 </html>

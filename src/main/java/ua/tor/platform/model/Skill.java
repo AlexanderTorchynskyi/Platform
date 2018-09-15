@@ -18,6 +18,14 @@ public class Skill {
         this.subskills = subskills;
     }
 
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
     public String getSkillName() {
         return skillName;
     }

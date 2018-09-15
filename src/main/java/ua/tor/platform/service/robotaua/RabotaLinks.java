@@ -1,8 +1,5 @@
 package ua.tor.platform.service.robotaua;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Callable;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.jsoup.Jsoup;
@@ -11,6 +8,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import ua.tor.platform.persistent.Status;
 import ua.tor.platform.persistent.Vacancy;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 
 /**
@@ -57,8 +58,6 @@ public class RabotaLinks implements Callable<List<Vacancy>> {
 		listOfVacancies = new ArrayList<>();
 
 		for (int i = startPage; i <= finishPage; i++) {
-			// doc = Jsoup.connect("https://rabota.ua/jobsearch/vacancy_list?pg=" + i)
-			// .timeout(10 * 10000).get();
 
 			doc = Jsoup
 					.connect(
