@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head">
+</head>
+<body>
+
+<div th:fragment="searchPagination" class="text-center">
+
+    <ul class='pagination pagination-centered'>
+        <!--<li th:class="${productEntities.firstPage?'disabled':''">-->
+        <span th:if='${products.isFirst()}'> First </span>
+        <a th:if='${not products.isFirst()}'
+           th:href='@{/admin/products/search(name=${name},page=0,size=${products.getSize()})}'>
+            First</a>
+
+        <span th:if='${not products.hasPrevious()}'>« Previous  </span>
+        <a th:if='${products.hasPrevious()}'
+           th:href='@{/admin/products/search(name=${name},page=${products.getNumber()-1},size=${products.getSize()})}'
+           title='Go to previous page'>« Previous </a>
+
+        <span th:if='${not products.hasNext()}'>Next »</span>
+        <a th:if='${products.hasNext()}'
+           th:href='@{/admin/products/search(name=${name},page=${products.getNumber()+1},size=${products.getSize()})}'
+           title='Go to next page'> Next »</a>
+
+        <span th:if='${products.isLast()}'>Last </span>
+        <a th:if='${not products.isLast()}'
+           th:href='@{/admin/products/search(name=${name},page=${products.getTotalPages() - 1},size=${products.getSize()})}'>
+            Last
+        </a>
+
+    </ul>
+</div>
+
+</body>
+</html>

@@ -84,7 +84,24 @@
 			<artifactId>google-api-services-sheets</artifactId>
 			<version>v4-rev512-1.23.0</version>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-devtools -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<version>2.0.5.RELEASE</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-thymeleaf -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+			<version>2.0.5.RELEASE</version>
+		</dependency>
+
 	</dependencies>
+
+
 
 	<build>
 		<plugins>

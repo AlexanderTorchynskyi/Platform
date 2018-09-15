@@ -1,4 +1,4 @@
-package ua.tor.platform.model;
+package ua.tor.platform.persistent;
 
 /**
  * 

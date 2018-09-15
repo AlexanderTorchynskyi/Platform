@@ -22,7 +22,7 @@ Check you database to get all information about crawler:
     "status" : "PROCESSED", 
     "created_date" : ISODate("2018-03-28T18:11:15.780+0000"), 
     "modified_date" : ISODate("2018-03-28T18:11:15.780+0000"), 
-    "_class" : "ua.tor.platform.model.Crawler"
+    "_class" : "ua.tor.platform.persistent.Crawler"
 }
 ```
 The next step is running parser to chop description into list of seperate words:
@@ -59,7 +59,7 @@ check collection `parsed_vacancy`
         "front-end", 
         "css3"
     ], 
-    "_class" : "ua.tor.platform.model.ParsedVacancy"
+    "_class" : "ua.tor.platform.persistent.ParsedVacancy"
 }
  ```
 This case includes stop words, but in the future the `stop_words` collection will be extended and the JSON will have 90% of skills in description

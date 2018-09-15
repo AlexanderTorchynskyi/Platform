@@ -9,8 +9,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import ua.tor.platform.model.Status;
-import ua.tor.platform.model.Vacancy;
+import ua.tor.platform.persistent.Status;
+import ua.tor.platform.persistent.Vacancy;
 
 
 /**

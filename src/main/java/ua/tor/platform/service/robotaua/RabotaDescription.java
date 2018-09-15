@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
-import ua.tor.platform.model.Vacancy;
+import ua.tor.platform.persistent.Vacancy;
 
 /**
  * 

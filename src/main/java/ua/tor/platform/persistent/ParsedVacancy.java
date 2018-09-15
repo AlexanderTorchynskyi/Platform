@@ -1,6 +1,5 @@
-package ua.tor.platform.model;
+package ua.tor.platform.persistent;
 
-import java.util.List;
 import java.util.Set;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;

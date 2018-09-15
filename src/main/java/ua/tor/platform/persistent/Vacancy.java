@@ -1,4 +1,4 @@
-package ua.tor.platform.model;
+package ua.tor.platform.persistent;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;

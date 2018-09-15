@@ -12,7 +12,7 @@ import java.util.Scanner;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ua.tor.platform.model.StopWord;
+import ua.tor.platform.persistent.StopWord;
 import ua.tor.platform.repository.IStopWordRepository;
 
 /**

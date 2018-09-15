@@ -4,8 +4,8 @@ import java.util.List;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
-import ua.tor.platform.model.Status;
-import ua.tor.platform.model.Vacancy;
+import ua.tor.platform.persistent.Status;
+import ua.tor.platform.persistent.Vacancy;
 
 
 /**
