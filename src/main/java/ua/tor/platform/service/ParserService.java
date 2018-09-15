@@ -2,7 +2,6 @@ package ua.tor.platform.service;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.tor.platform.persistent.ParsedVacancy;
 import ua.tor.platform.persistent.Status;
@@ -26,69 +25,70 @@ public class ParserService {
 
     private static final Logger LOGGER = Logger.getLogger(ParserService.class);
 
-    @Autowired
-    private IParsedVacancyRepository parsedVacancyRepository;
-    @Autowired
-    private IVacancyRepository vacancyRepository;
-    @Autowired
-    private IStopWordRepository stopWordRepository;
+    private final IParsedVacancyRepository parsedVacancyRepository;
+    private final IVacancyRepository vacancyRepository;
+    private final IStopWordRepository stopWordRepository;
 
-    private List<Vacancy> batchOfVacancy;
-    private List<ParsedVacancy> bathOfParsedVacancy;
-    private List<StopWord> listOfStopWords;
-    private List<String> listOfStopWordsTypeString;
+
+    public ParserService(IParsedVacancyRepository parsedVacancyRepository, IVacancyRepository vacancyRepository, IStopWordRepository stopWordRepository) {
+        this.parsedVacancyRepository = parsedVacancyRepository;
+        this.vacancyRepository = vacancyRepository;
+        this.stopWordRepository = stopWordRepository;
+    }
 
     /**
      * The method will remove all words that are repeated and all symbolics;
-     *
      */
     public void parseVacancies() {
         StopWatch watcher = new StopWatch();
         watcher.start();
         LOGGER.info("Getting vacancies from DB by crawler id");
-        batchOfVacancy = vacancyRepository.findByStatus(Status.NEW);
-        changeStatusForVacancy(Status.IN_PROCESS);
+
+        List<Vacancy> batchOfVacancy = vacancyRepository.findByStatus(Status.NEW);
+        changeStatusForVacancy(batchOfVacancy, Status.IN_PROCESS);
+
         LOGGER.info("Start chopping.. ");
-        chopChop();
+        List<ParsedVacancy> parsedVacancies = chopChop(batchOfVacancy);
         LOGGER.info("Finish chopping.. ");
-        changeStatusForVacancy(Status.PROCESSED);
+
+        changeStatusForVacancy(batchOfVacancy, Status.PROCESSED);
         LOGGER.info("Start saving to DB");
-        saveOrUpdate(bathOfParsedVacancy);
+
+        saveOrUpdate(parsedVacancies);
+
         watcher.stop();
         LOGGER.info("Total time in seconds " + watcher.getTime(TimeUnit.SECONDS));
     }
 
-    private void changeStatusForVacancy(Status status) {
+    private void changeStatusForVacancy(List<Vacancy> batchOfVacancy, Status status) {
         for (Vacancy vacancy : batchOfVacancy) {
             vacancy.setStatus(status);
         }
         vacancyRepository.saveAll(batchOfVacancy);
     }
 
-    private void chopChop() {
-        String description;
-        ParsedVacancy parsedVacancy;
+    private List<ParsedVacancy> chopChop(List<Vacancy> batchOfVacancy) {
 
-        listOfStopWords = getListOfStopWords();
-        getListOfStopWords(listOfStopWords);
-        String[] splitedDescription;
-        bathOfParsedVacancy = new ArrayList<>();
-        Set<String> cleanDescription;
+        List<StopWord> listOfStopWords = getListOfStopWords();
+        List<String> listOfStopWordsTypeString = getListOfStopWords(listOfStopWords);
+
+        List<ParsedVacancy> bathOfParsedVacancy = new ArrayList<>();
 
         for (Vacancy vacancy : batchOfVacancy) {
 
-            parsedVacancy = new ParsedVacancy();
-            cleanDescription = new HashSet<>();
+            ParsedVacancy parsedVacancy = new ParsedVacancy();
+            Set<String> cleanDescription = new HashSet<>();
 
-            description = vacancy.getDescription();
+            String description = vacancy.getDescription();
             description = description.replaceAll("[^a-zA-Z0-9'-]", " ");
-            splitedDescription = description.split("\\s+");
+            String[] splitedDescription = description.split("\\s+");
 
             for (String word : splitedDescription) {
                 if (!word.isEmpty()) {
                     cleanDescription.add(word.toLowerCase());
                 }
             }
+
             cleanDescription.removeAll(listOfStopWordsTypeString);
             parsedVacancy.setCrawlerId(vacancy.getCrawlerId());
             parsedVacancy.setDescription(cleanDescription);
@@ -96,14 +96,16 @@ public class ParserService {
 
             bathOfParsedVacancy.add(parsedVacancy);
         }
+        return bathOfParsedVacancy;
     }
 
-    private List<StopWord>  getListOfStopWords() {
+
+    private List<StopWord> getListOfStopWords() {
         return stopWordRepository.findAll();
     }
 
     private List<String> getListOfStopWords(List<StopWord> list) {
-        listOfStopWordsTypeString = new ArrayList<>();
+        List<String> listOfStopWordsTypeString = new ArrayList<>();
         for (StopWord stopWord : list) {
             listOfStopWordsTypeString.add(stopWord.getKey());
         }

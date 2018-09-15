@@ -3,21 +3,19 @@ package ua.tor.platform.service;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.tor.platform.persistent.Crawler;
 import ua.tor.platform.persistent.Status;
 import ua.tor.platform.persistent.Vacancy;
 import ua.tor.platform.repository.ICrawlerRepository;
-import ua.tor.platform.repository.IVacancyRepository;
 import ua.tor.platform.service.robotaua.RabotaDescription;
 import ua.tor.platform.service.robotaua.RabotaLinks;
 import ua.tor.platform.service.robotaua.RabotaPageBasicInformation;
+import ua.tor.platform.web.api.dto.CrawlerRequest;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -28,46 +26,47 @@ import java.util.concurrent.*;
 public class CrawlerService {
 
     private static final Logger LOGGER = Logger.getLogger(CrawlerService.class);
+    private static final int AMOUT_OF_THREADS = 8;
 
-    @Autowired
-    private IVacancyRepository vacancyRepository;
-    @Autowired
-    private ICrawlerRepository crawlerRepository;
-    private static final int amoutOfThreads = 8;
-    private String searchword;
-    private RabotaPageBasicInformation robota;
+    private final VacancyService vacancyRepository;
+    private final ICrawlerRepository crawlerRepository;
+
     private Crawler crawler;
 
+    public CrawlerService(VacancyService vacancyRepository, ICrawlerRepository crawlerRepository) {
+        this.vacancyRepository = vacancyRepository;
+        this.crawlerRepository = crawlerRepository;
+    }
 
     public List<Crawler> findAllBySearchCondition(String searchword) {
         return crawlerRepository.findAllBySearchCondition(searchword);
     }
 
-    public ObjectId startCrawling(String searchword)
+    public ObjectId startCrawling(CrawlerRequest crawlerRequest)
             throws IOException, InterruptedException, ExecutionException {
-        this.searchword = searchword;
+
         StopWatch s = new StopWatch();
         crawler = new Crawler();
-        crawler.setSearchCondition(searchword);
+        crawler.setSearchCondition(crawlerRequest.getSearch());
         crawler.setStatus(Status.NEW);
         crawler.setCreatedDate(LocalDate.now());
         crawler.setModifiedDate(LocalDate.now());
 
         crawler = saveOrUpdateCrawler(crawler);
 
-        LOGGER.info("startet Crawling with params: searchWord " + searchword + " amount of threads "
-                + amoutOfThreads);
+        LOGGER.info("startet Crawling with params: searchWord " + crawlerRequest.getSearch() + " amount of threads "
+                + AMOUT_OF_THREADS);
 
         s.start();
 
-        robota = new RabotaPageBasicInformation(searchword, amoutOfThreads);
+        RabotaPageBasicInformation robota = new RabotaPageBasicInformation(crawlerRequest.getSearch(), AMOUT_OF_THREADS);
         crawler.setStatus(Status.IN_PROCESS);
         saveOrUpdateCrawler(crawler);
         List<Integer> listOfPagesRobota = robota.getListOfPages();
         ExecutorService ex = Executors.newWorkStealingPool();
 
         List<Future<List<Vacancy>>> linksRobota =
-                ex.invokeAll(getListOfLinksTaskRobota(listOfPagesRobota, searchword));
+                ex.invokeAll(getListOfLinksTaskRobota(listOfPagesRobota, crawlerRequest.getSearch()));
 
         List<Callable<List<Vacancy>>> listOfTasksAll =
                 new ArrayList<Callable<List<Vacancy>>>(getListOfDescriptionTaskRobota(linksRobota));
