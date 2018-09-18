@@ -1,4 +1,5 @@
 # Platform
+
 The project will give you a presentation of skills the developer needs to have in the modern world
 Quick guide:
 - Make sure you have got `JDK 8` and `MongoDB` on your laptop;
@@ -6,7 +7,7 @@ Quick guide:
 -  `mvnw package`
 - `java -jar target/platform-0.0.1-SNAPSHOT.jar`
 If everything was done correctly you should see no error in the console; 
-
+#URL's is not update!! check `api layer`
 First of all, letss download all stop words into our database just put next URL into your browse: `localhost:8080/platform/rest/stopwords/load`
 If everything was loaded you should see `true` in the output, if so, go ahead
 To start crawling go to `localhost:8080/platform/rest/crawler/start?searchword=ruby` this will start crawling vacancies that have ruby language.
